@@ -54,5 +54,9 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "@backstage/plugin-signals-react": "^0.0.3",
+    "sqlite3": "^5.1.7"
   }
 }

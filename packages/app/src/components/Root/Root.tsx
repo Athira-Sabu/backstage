@@ -5,6 +5,7 @@ import ExtensionIcon from '@material-ui/icons/Extension';
 import MapIcon from '@material-ui/icons/MyLocation';
 import LibraryBooks from '@material-ui/icons/LibraryBooks';
 import CreateComponentIcon from '@material-ui/icons/AddCircleOutline';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 import LogoFull from './LogoFull';
 import LogoIcon from './LogoIcon';
 import {
@@ -22,7 +23,7 @@ import {
   SidebarScrollWrapper,
   SidebarSpace,
   useSidebarOpenState,
-  Link,
+  Link, EmailIcon, ChatIcon,
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
@@ -69,6 +70,8 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={CreateComponentIcon} to="create" text="Create..." />
+        <SidebarItem icon={NotificationsIcon} to="notifications" text="Notifications" />
+
         {/* End global nav */}
         <SidebarDivider />
         <SidebarScrollWrapper>
@@ -77,7 +80,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
-      <SidebarGroup
+      <SidebarGroup 
         label="Settings"
         icon={<UserSettingsSignInAvatar />}
         to="/settings"
