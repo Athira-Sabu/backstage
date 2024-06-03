@@ -60,13 +60,17 @@ export async function createRouter(
   setInterval(async () => {
     // Fetch the latest notification
     const notifications = await notificationsStore.getAll();
+    if(!notifications.length) {
+      console.log('No notifications found');
+        return;
+    }
     const latestNotification = notifications[notifications.length - 1];
 
     const message = {
-      id: latestNotification.id,
-      priority: latestNotification.priority,
-      title: latestNotification.title,
-      message: latestNotification.message,
+      id: latestNotification?.id,
+      priority: latestNotification?.priority,
+      title: latestNotification?.title,
+      message: latestNotification?.message,
     };
 
     // Send the latest notification as the message

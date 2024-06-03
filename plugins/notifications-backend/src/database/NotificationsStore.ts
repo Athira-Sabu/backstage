@@ -1,8 +1,8 @@
 import {DatabaseService, resolvePackagePath} from "@backstage/backend-plugin-api";
-import { NotFoundError } from '@backstage/errors';
 import {Knex} from "knex";
 
 import {Notification} from "../types";
+import {Notification_Priority} from "../constants";
 
 const migrationsDir = resolvePackagePath(
     '@internal/backstage-plugin-notifications-backend',
@@ -31,9 +31,10 @@ export class NotificationsStore {
         const rows = await this.client(TABLE_NAME)
             .select(['*']);
         if (!rows.length) {
-            throw new NotFoundError(
-                `Unable to get notifications`,
-            );
+            console.log("No notifications found");
+            // now returning dummy data, later to be [] array
+            // return [];
+            return [{id: 1, title: "Dummy Notification", priority: Notification_Priority.NORMAL, message: "some message", timestamp: new Date()}];
         }
         return rows;
     }

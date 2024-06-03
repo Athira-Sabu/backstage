@@ -39,7 +39,10 @@ backend.add(import('@backstage/plugin-search-backend-module-catalog/alpha'));
 
 backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 
-//signals plugin
+// signals plugin
 backend.add(import('@backstage/plugin-signals-backend'));
+
+// notifications plugin
+backend.add(import('@internal/backstage-plugin-notifications-backend'));
 
 backend.start();
