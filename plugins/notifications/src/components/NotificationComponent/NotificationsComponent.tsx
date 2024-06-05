@@ -9,9 +9,9 @@ import {
   HeaderLabel,
   SupportButton,
 } from '@backstage/core-components';
-import { ExampleFetchComponent } from '../ExampleFetchComponent';
+import { NotificationsFetchComponent } from '../NotificationFetchComponent';
 
-export const ExampleComponent = () => (
+export const NotificationsComponent = () => (
   <Page themeId="tool">
     <Header title="Notifications!" subtitle="Get notifications from Jira, Confluence, GitLab, and more in one place">
       <HeaderLabel label="Owner" value="Team X" />
@@ -30,7 +30,7 @@ export const ExampleComponent = () => (
           </InfoCard>
         </Grid>
         <Grid item>
-          <ExampleFetchComponent />
+          <NotificationsFetchComponent />
         </Grid>
       </Grid>
     </Content>

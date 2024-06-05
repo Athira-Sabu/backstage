@@ -9,16 +9,9 @@ import {
 import useAsync from 'react-use/lib/useAsync';
 import {notificationsApiRef} from "../../api/NotificationsApi";
 import {useSignal} from '@backstage/plugin-signals-react';
+import {Notification} from "../../types";
 
 
-type Notification = {
-  id: number;
-  title: string;
-  message: string;
-  origin: string;
-  priority: string;
-
-};
 
 type DenseTableProps = {
   notifications: Notification[];
@@ -54,10 +47,9 @@ export const DenseTable = ({ notifications }: DenseTableProps) => {
     }
   ];
 
-
   return (
       <Table
-          key={notifications.length}
+          key={notifications?.length}
           title="Notifications"
           options={{search: false, paging: false, padding: 'dense'}}
           columns={columns}
@@ -67,29 +59,26 @@ export const DenseTable = ({ notifications }: DenseTableProps) => {
   );
 };
 
-export const ExampleFetchComponent = () => {
+export const NotificationsFetchComponent = () => {
   const notificationApi = useApi(notificationsApiRef);
-  const {lastSignal} = useSignal<Notification>('@internal/backstage-plugin-notifications-backend:update');
+  const {lastSignal} = useSignal<Notification>('notifications:update');
 
-  const {value, loading, error} = useAsync(async (): Promise<Notification[]> => {
-    const notifications = await notificationApi.getNotifications();
-    console.log("Notifications>>>>>", notifications)
-    return notifications;
+  const {value : notifications, loading, error} = useAsync(async (): Promise<Notification[]> => {
+    return await notificationApi.getNotifications();
   }, []);
 
   useEffect(() => {
-    if(lastSignal) {
-      console.log(lastSignal);
+    if (lastSignal) {
+     notifications?.unshift(lastSignal)
     }
-  }, [lastSignal]);
-
-
+  }, [notifications,lastSignal]);
 
   if (loading) {
     return <Progress/>;
   } else if (error) {
     return <ResponseErrorPanel error={error}/>;
   }
-
-  return <DenseTable notifications={value || []}/>;
+  return (
+        <DenseTable notifications={notifications || []}/>
+  );
 };

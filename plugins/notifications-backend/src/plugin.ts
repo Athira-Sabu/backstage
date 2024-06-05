@@ -18,19 +18,25 @@ export const notificationsPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         logger: coreServices.logger,
         database: coreServices.database,
-        signals: signalsServiceRef
+        signals: signalsServiceRef,
+        httpAuth: coreServices.httpAuth,
+        userInfo: coreServices.userInfo,
       },
       async init({
         httpRouter,
         logger,
         database,
         signals,
+        httpAuth,
+        userInfo,
       }) {
         httpRouter.use(
           await createRouter({
             logger,
             database,
             signals,
+            httpAuth,
+            userInfo,
           }),
         );
         httpRouter.addAuthPolicy({

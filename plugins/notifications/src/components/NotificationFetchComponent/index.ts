@@ -1,0 +1,1 @@
+export { NotificationsFetchComponent } from './NotificationsFetchComponent';

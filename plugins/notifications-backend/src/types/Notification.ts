@@ -3,7 +3,12 @@ import {Notification_Priority} from "../constants";
 export type Notification = {
     id: number;
     priority: Notification_Priority;
-    title: string;
+    title: string | null;
     message: string;
-    timestamp: Date;
+    origin: string;
+    user: string;
+    read: boolean;
+    create_at: Date;
 }
+
+export type NotificationId = Notification['id'];
