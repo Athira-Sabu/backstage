@@ -8,7 +8,7 @@ export type Notification = {
     origin: string;
     user: string;
     read: boolean;
-    create_at: Date;
+    create_at: string;
 }
 
 export type NotificationId = Notification['id'];

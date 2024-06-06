@@ -4,7 +4,7 @@ import express from 'express';
 import Router from 'express-promise-router';
 import {NotificationsStore} from "../database/NotificationsStore";
 import {SignalsService} from '@backstage/plugin-signals-node';
-import {NotificationFetchOptions} from "../types";
+import {Notification, NotificationFetchOptions} from "../types";
 import {getUser} from "./user";
 
 
@@ -16,6 +16,18 @@ export interface RouterOptions {
     httpAuth: HttpAuthService;
 }
 
+const publishSignals = async (signals: SignalsService, notification: Notification, logger: LoggerService, user: string): Promise<void> => {
+    try {
+        await signals.publish<Notification>({
+            recipients: {type: 'user', entityRef: [user]},
+            channel: 'notifications:newNotification',
+            message: notification,
+        });
+    } catch (e) {
+        logger.error(`Failed to send signal: ${e}`);
+    }
+}
+
 export async function createRouter(
     options: RouterOptions,
 ): Promise<express.Router> {
@@ -25,12 +37,11 @@ export async function createRouter(
     const router = Router();
     router.use(express.json());
 
-    router.get('/health', (_, response) => {
-        logger.info('PONG!');
-        response.json({status: 'ok'});
+    router.get('/health', (_: express.Request, res: express.Response): void => {
+        res.json({status: 'ok'});
     });
 
-    router.get('/', async (req: express.Request, res) => {
+    router.get('/', async (req: express.Request, res: express.Response): Promise<void> => {
         const user = await getUser(req, httpAuth, userInfo);
 
         const fetchOptions: NotificationFetchOptions = {
@@ -46,7 +57,7 @@ export async function createRouter(
     });
 
 
-    router.post('/', async (req, res) => {
+    router.post('/', async (req: express.Request, res: express.Response): Promise<void> => {
         try {
             const notification = req.body;
             const user = await getUser(req, httpAuth, userInfo);
@@ -56,9 +67,9 @@ export async function createRouter(
                 res.status(400).json({error: 'Invalid user'});
                 return;
             }
-
             notification.user = user;
             await notificationsStore.insert(notification);
+            await publishSignals(signals, notification, logger, user)
             res.status(201).end();
         } catch (error) {
             logger.error(`Failed to save notification: ${error}`);
@@ -66,7 +77,7 @@ export async function createRouter(
         }
     });
 
-    router.put('/status', async (req, res) => {
+    router.put('/status', async (req: express.Request, res: express.Response): Promise<void> => {
         const {ids, status} = req.body;
         if (!Array.isArray(ids)) {
             res.status(400).json({error: 'ids must be an array'});
@@ -80,7 +91,7 @@ export async function createRouter(
         }
     });
 
-    router.delete('/', async (req, res) => {
+    router.delete('/', async (req: express.Request, res: express.Response): Promise<void> => {
         const {ids} = req.body;
         if (!Array.isArray(ids)) {
             res.status(400).json({error: 'ids must be an array'});
@@ -94,33 +105,7 @@ export async function createRouter(
             res.status(500).json({error: 'Failed to delete notification'});
         }
     });
-
-
-    // setInterval(async () => {
-    //   // Fetch the latest notification
-    //   const notifications = await notificationsStore.getAll();
-    //   if(!notifications.length) {
-    //     console.log('No notifications found');
-    //       return;
-    //   }
-    //   const latestNotification = notifications[notifications.length - 1];
-    //
-    //   const message = {
-    //     id: latestNotification?.id,
-    //     priority: latestNotification?.priority,
-    //     title: latestNotification?.title,
-    //     message: latestNotification?.message,
-    //   };
-    //   try{
-    //       await signals.publish({
-    //           recipients: { type: 'broadcast' },
-    //           channel: 'notifications:update',
-    //           message: message,
-    //       });
-    //   } catch (e) {
-    //     logger.error(`Failed to send signal: ${e}`);
-    //   }
-    // }, 20000);
     router.use(errorHandler());
     return router;
 }
+
