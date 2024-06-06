@@ -4,7 +4,7 @@ export type Notification = {
     title: string;
     message: string;
     origin: string;
-    createdAt: Date;
+    createdAt: string;
 }
 export enum Notification_Priority {
     LOW = 'low',

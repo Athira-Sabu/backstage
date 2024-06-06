@@ -60,16 +60,16 @@ export async function createRouter(
     router.post('/', async (req: express.Request, res: express.Response): Promise<void> => {
         try {
             const notification = req.body;
-            const user = await getUser(req, httpAuth, userInfo);
-
-            if (!user) {
-                logger.error('Invalid user');
-                res.status(400).json({error: 'Invalid user'});
-                return;
-            }
-            notification.user = user;
+            // TODO how to handle user auth in scenario of inset
+            // const user = await getUser(req, httpAuth, userInfo);
+            //
+            // if (!user) {
+            //     logger.error('Invalid user');
+            //     res.status(400).json({error: 'Invalid user'});
+            //     return;
+            // }
             await notificationsStore.insert(notification);
-            await publishSignals(signals, notification, logger, user)
+            await publishSignals(signals, notification, logger, notification.user);
             res.status(201).end();
         } catch (error) {
             logger.error(`Failed to save notification: ${error}`);
