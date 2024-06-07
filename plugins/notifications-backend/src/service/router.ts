@@ -84,7 +84,7 @@ export async function createRouter(
         }
         try {
             await notificationsStore.updateStatus(ids, status);
-            res.status(200).end();
+            res.status(200).json({message: 'Notification status updated successfully'});
         } catch (error) {
             logger.error(`Failed to update notification status: ${error}`);
             res.status(500).json({error: 'Failed to update notification status'});
@@ -92,14 +92,14 @@ export async function createRouter(
     });
 
     router.delete('/', async (req: express.Request, res: express.Response): Promise<void> => {
-        const {ids} = req.body;
+        const ids = req.body;
         if (!Array.isArray(ids)) {
             res.status(400).json({error: 'ids must be an array'});
             return;
         }
         try {
             await notificationsStore.deleteAll(ids);
-            res.status(204).end();
+            res.status(200).json({message: 'Notifications deleted successfully'}); // TODO 204 or 200
         } catch (error) {
             logger.error(`Failed to delete notification ${error}`);
             res.status(500).json({error: 'Failed to delete notification'});

@@ -30,7 +30,7 @@ export class NotificationsStore implements NotificationStoreInterface {
             .select('*')
             .where('user', options.user);
         if (options.cursor) {
-            query = query.where('id', '>', options.cursor);
+            query = query.where('id', '<', options.cursor);
         }
 
         if (options.limit) {
@@ -48,7 +48,7 @@ export class NotificationsStore implements NotificationStoreInterface {
         if (options.origin) {
             query = query.where('origin', options.origin);
         }
-
+        query.orderBy('id', 'desc');
         return await query;
     }
 

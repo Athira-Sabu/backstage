@@ -6,4 +6,6 @@ export const notificationsApiRef = createApiRef<NotificationsApi>({
 });
 export interface NotificationsApi {
     getNotifications(options?: NotificationFetchOptions): Promise<Notification[]>;
+    updateStatus(ids: number[], status: boolean): Promise<void>;
+    deleteNotifications(ids: number[]): Promise<void>;
 }

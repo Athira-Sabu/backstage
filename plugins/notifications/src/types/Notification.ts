@@ -4,6 +4,7 @@ export type Notification = {
     title: string;
     message: string;
     origin: string;
+    read: boolean;
     createdAt: string;
 }
 export enum Notification_Priority {

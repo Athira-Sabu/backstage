@@ -19,7 +19,21 @@ export class NotificationsClient  implements NotificationsApi {  // TODO change
         return await this.request<Notification[]>('notifications', { method: 'GET', params });
 
     }
+    
+    async updateStatus(ids: number[], status: boolean): Promise<void> {
+        await this.request<Notification[]>('notifications/status', {
+            method: 'PUT', body: JSON.stringify({ids, status}),
+            headers: {'Content-Type': 'application/json'}
+        });
+    }
 
+    async deleteNotifications(ids: number[]): Promise<void> {
+        await this.request<Notification[]>('notifications', {
+            method: 'DELETE', body: JSON.stringify(ids),
+            headers: {'Content-Type': 'application/json'}
+        });
+    }
+    
     private async request<T>(path: string, init?: any): Promise<T> {
         const baseUrl = `${await this.discoveryApi.getBaseUrl('notifications')}`;
         const url = new URL(path, baseUrl);
