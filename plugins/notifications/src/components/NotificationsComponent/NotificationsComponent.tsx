@@ -9,7 +9,7 @@ import {
   HeaderLabel,
   SupportButton,
 } from '@backstage/core-components';
-import { NotificationsFetchComponent } from '../NotificationFetchComponent';
+import { NotificationsFetchComponent } from '../NotificationsFetchComponent';
 
 export const NotificationsComponent = () => (
   <Page themeId="tool">

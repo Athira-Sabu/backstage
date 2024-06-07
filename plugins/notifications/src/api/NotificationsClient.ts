@@ -23,14 +23,12 @@ export class NotificationsClient  implements NotificationsApi {  // TODO change
     async updateStatus(ids: number[], status: boolean): Promise<void> {
         await this.request<Notification[]>('notifications/status', {
             method: 'PUT', body: JSON.stringify({ids, status}),
-            headers: {'Content-Type': 'application/json'}
         });
     }
 
     async deleteNotifications(ids: number[]): Promise<void> {
         await this.request<Notification[]>('notifications', {
             method: 'DELETE', body: JSON.stringify(ids),
-            headers: {'Content-Type': 'application/json'}
         });
     }
     
@@ -41,6 +39,7 @@ export class NotificationsClient  implements NotificationsApi {  // TODO change
         if (init.params) {
             Object.keys(init.params).forEach(key => url.searchParams.append(key, init.params[key]));
         }
+        init.headers = {'Content-Type': 'application/json'}
         const response = await this.fetchApi.fetch(url.toString(), init);
 
         if (!response.ok) {

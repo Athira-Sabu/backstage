@@ -3,3 +3,5 @@ export enum Notification_Priority {
     NORMAL = 'normal',
     HIGH = 'high',
 };
+
+export const  CHANNEL_NEW_NOTIFICATION = 'notifications:newNotification';

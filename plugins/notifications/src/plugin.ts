@@ -1,5 +1,5 @@
 import {
-    createApiFactory, createApiRef,
+    createApiFactory,
     createPlugin,
     createRoutableExtension, discoveryApiRef, fetchApiRef,
 } from '@backstage/core-plugin-api';
@@ -27,7 +27,7 @@ export const NotificationsPage = notificationsPlugin.provide(
   createRoutableExtension({
     name: 'NotificationsPage',
     component: () =>
-      import('./components/NotificationComponent').then(m => m.NotificationsComponent),
+      import('./components/NotificationsComponent').then(m => m.NotificationsComponent),
     mountPoint: rootRouteRef,
   }),
 );

@@ -6,6 +6,7 @@ import {NotificationsStore} from "../database/NotificationsStore";
 import {SignalsService} from '@backstage/plugin-signals-node';
 import {Notification, NotificationFetchOptions} from "../types";
 import {getUser} from "./user";
+import {CHANNEL_NEW_NOTIFICATION} from "../constants";
 
 
 export interface RouterOptions {
@@ -20,7 +21,7 @@ const publishSignals = async (signals: SignalsService, notification: Notificatio
     try {
         await signals.publish<Notification>({
             recipients: {type: 'user', entityRef: [user]},
-            channel: 'notifications:newNotification',
+            channel: CHANNEL_NEW_NOTIFICATION,
             message: notification,
         });
     } catch (e) {

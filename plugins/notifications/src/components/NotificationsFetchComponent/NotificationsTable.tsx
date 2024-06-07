@@ -16,7 +16,7 @@ import React from 'react';
 
 interface NotificationsTableProps {
     notifications: Notification[];
-    loadMore: () => void;
+    loadMore?: () => void;
     onDelete: (ids: number[]) => void;
     updateStatus: (ids: number[], status: boolean) => void;
 };
@@ -112,7 +112,7 @@ export const NotificationsTable = ({notifications, loadMore, onDelete, updateSta
             title: '',
             field: 'checkbox',
             render: (rowData: any) => (
-                <Checkbox checked={selected.includes(rowData.id)} onChange={() => handleSelect(rowData.id)}/>
+                <Checkbox color= 'primary' checked={selected.includes(rowData.id)} onChange={() => handleSelect(rowData.id)}/>
             )
         },
         {
@@ -167,7 +167,7 @@ export const NotificationsTable = ({notifications, loadMore, onDelete, updateSta
                 data={data}
                 filters={filters}
             />
-            <LoadMore loadMore={loadMore}/>
+            {loadMore &&<LoadMore loadMore={loadMore}/>}
         </>
     );
 };
