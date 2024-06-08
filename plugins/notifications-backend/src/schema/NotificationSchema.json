@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "normal", "high"]
+    },
+    "title": {
+      "type": "string"
+    },
+    "origin": {
+      "type": "string"
+    },
+    "read": {
+      "type": "boolean"
+    }
+  },
+  "required": ["user", "message"]
+}

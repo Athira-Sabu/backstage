@@ -1,8 +1,9 @@
-import {DatabaseService, LoggerService, resolvePackagePath} from "@backstage/backend-plugin-api";
+import {LoggerService, resolvePackagePath} from "@backstage/backend-plugin-api";
 import {Knex} from "knex";
 
 import {Notification, NotificationFetchOptions, NotificationId} from "../types";
 import {NotificationStoreInterface} from "./NotificationStoreInterface";
+import {PluginDatabaseManager} from "@backstage/backend-common";
 
 const migrationsDir = resolvePackagePath(
     '@internal/backstage-plugin-notifications-backend',
@@ -10,19 +11,19 @@ const migrationsDir = resolvePackagePath(
 );
 const NOTIFICATION_TABLE = 'notification';
 
-export class NotificationsStore implements NotificationStoreInterface {
+export class NotificationStore implements NotificationStoreInterface {
 
     private constructor(private readonly client: Knex) {
     }
 
-    static async create(database: DatabaseService, logger: LoggerService): Promise<NotificationsStore> {
+    static async create(database: PluginDatabaseManager, logger: LoggerService): Promise<NotificationStoreInterface> {
         const client = await database.getClient();
         await client.migrate.latest({
             directory: migrationsDir,
         });
 
         logger.info('Migrations successfully ran for notifications plugin');
-        return new NotificationsStore(client);
+        return new NotificationStore(client);
     }
 
     async getAll(options: NotificationFetchOptions): Promise<Notification[]> {
@@ -49,7 +50,12 @@ export class NotificationsStore implements NotificationStoreInterface {
             query = query.where('origin', options.origin);
         }
         query.orderBy('id', 'desc');
-        return await query;
+
+        const notifications = await query;
+        return notifications?.map(notification => ({
+            ...notification,
+            read: !!notification.read, // Converts 1 to true and 0 to false
+        }));
     }
 
     async insert(notification: Notification): Promise<NotificationId> {

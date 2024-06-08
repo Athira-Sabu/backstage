@@ -2,8 +2,9 @@ import {
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
-import { createRouter } from './service/router';
+import { createRouter } from './service/Router';
 import { signalsServiceRef } from '@backstage/plugin-signals-node';
+import {NotificationStore} from "./database/NotificationStore";
 
 /**
  * notificationsPlugin backend plugin
@@ -30,10 +31,12 @@ export const notificationsPlugin = createBackendPlugin({
         httpAuth,
         userInfo,
       }) {
+        const notificationsStore = await NotificationStore.create(database, logger);
+
         httpRouter.use(
           await createRouter({
+            notificationsStore,
             logger,
-            database,
             signals,
             httpAuth,
             userInfo,
