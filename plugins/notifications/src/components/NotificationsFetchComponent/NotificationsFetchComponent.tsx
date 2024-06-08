@@ -64,6 +64,6 @@ export const NotificationsFetchComponent = () => {
     return (
         <NotificationsTable notifications={notifications || []}
                             loadMore={hasMore ? async () => await fetchNotifications(cursor) : undefined}
-                            onDelete={deleteNotifications} updateStatus={updateStatus}/>
+                            onDelete={deleteNotifications} onUpdateStatus={updateStatus}/>
     );
 };

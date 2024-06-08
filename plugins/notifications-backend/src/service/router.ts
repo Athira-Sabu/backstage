@@ -61,7 +61,7 @@ export async function createRouter(
     router.post('/', async (req: express.Request, res: express.Response): Promise<void> => {
         try {
             const notification = req.body;
-            // TODO how to handle user auth in scenario of inset
+            // TODO how to handle user auth in scenario of insert from mockserver?
             // const user = await getUser(req, httpAuth, userInfo);
             //
             // if (!user) {

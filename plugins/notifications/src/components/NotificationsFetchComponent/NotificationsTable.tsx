@@ -18,7 +18,7 @@ interface NotificationsTableProps {
     notifications: Notification[];
     loadMore?: () => void;
     onDelete: (ids: number[]) => void;
-    updateStatus: (ids: number[], status: boolean) => void;
+    onUpdateStatus: (ids: number[], status: boolean) => void;
 };
 
 interface TitleProps {
@@ -28,7 +28,7 @@ interface TitleProps {
 
 interface SelectedActionsProps {
     selected: number[];
-    updateStatus: (ids: number[], status: boolean) => void;
+    onUpdateStatus: (ids: number[], status: boolean) => void;
     onDelete: (ids: number[]) => void;
 }
 
@@ -57,12 +57,12 @@ const Title = ({title, message}: TitleProps) => {
     );
 };
 
-const SelectedActions = ({selected, updateStatus, onDelete}: SelectedActionsProps) => (
+const SelectedActions = ({selected, onUpdateStatus, onDelete}: SelectedActionsProps) => (
     <Box display="flex" alignItems="center">
         {selected.length > 0 && (
             <>
                 <Tooltip title="Mark all selected as read">
-                    <IconButton onClick={() => updateStatus(selected, true)}>
+                    <IconButton onClick={() => onUpdateStatus(selected, true)}>
                         <ChecklistRtlIcon/>
                     </IconButton>
                 </Tooltip>
@@ -88,7 +88,7 @@ const LoadMore = ({loadMore}: LoadMoreProps) => (
     </Box>
 );
 
-export const NotificationsTable = ({notifications, loadMore, onDelete, updateStatus}: NotificationsTableProps) => {
+export const NotificationsTable = ({notifications, loadMore, onDelete, onUpdateStatus}: NotificationsTableProps) => {
     const [selected, setSelected] = useState<number[]>([]);
 
     const handleSelect = useCallback((id: number) => {
@@ -96,9 +96,9 @@ export const NotificationsTable = ({notifications, loadMore, onDelete, updateSta
             ? prevSelected.filter(item => item !== id) : [...prevSelected, id]);
     }, []);
 
-    const renderActions = (rowData: any) => (
+    const renderActions = (rowData: Notification) => (
         <>
-            <IconButton onClick={() => updateStatus([rowData.id], !rowData.read)}>
+            <IconButton onClick={() => onUpdateStatus([rowData.id], !rowData.read)}>
                 {rowData.read ? <DoneAllIcon sx={{color: '#0784c7'}}/> : <DoneIcon/>}
             </IconButton>
             <IconButton onClick={() => onDelete([rowData.id])}>
@@ -107,18 +107,18 @@ export const NotificationsTable = ({notifications, loadMore, onDelete, updateSta
         </>
     );
 
-    const columns: TableColumn[] = [
+    const columns: TableColumn<Notification>[] = [
         {
             title: '',
             field: 'checkbox',
-            render: (rowData: any) => (
+            render: (rowData: Notification) => (
                 <Checkbox color= 'primary' checked={selected.includes(rowData.id)} onChange={() => handleSelect(rowData.id)}/>
             )
         },
         {
             title: 'Title',
             field: 'title',
-            render: (rowData: any) => <Title title={rowData.title} message={rowData.message}/>
+            render: (rowData: Notification) => <Title title={rowData.title} message={rowData.message}/>
         },
         {
             title: 'Origin',
@@ -134,18 +134,6 @@ export const NotificationsTable = ({notifications, loadMore, onDelete, updateSta
             render: renderActions,
         },
     ];
-
-    const data = notifications ? notifications.map(notification => {
-        return {
-            id: notification.id,
-            title: notification.title,
-            message: notification.message,
-            origin: notification.origin,
-            read: Boolean(notification.read),
-            priority: notification.priority,
-        };
-    }) : [];
-
     const filters: TableFilter[] = [
         {
             column: 'Origin',
@@ -161,10 +149,10 @@ export const NotificationsTable = ({notifications, loadMore, onDelete, updateSta
         <>
             <Table
                 key={notifications?.length}
-                title={<SelectedActions selected={selected} updateStatus={updateStatus} onDelete={onDelete}/>}
+                title={<SelectedActions selected={selected} onUpdateStatus={onUpdateStatus} onDelete={onDelete}/>}
                 options={{search: false, padding: 'dense', paging: false}}
                 columns={columns}
-                data={data}
+                data={notifications}
                 filters={filters}
             />
             {loadMore &&<LoadMore loadMore={loadMore}/>}
