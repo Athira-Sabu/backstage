@@ -73,7 +73,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem
           icon={NotificationsIcon}
           to="notifications"
-          text="NotificationsPage"
+          text="Notifications"
         />
 
         {/* End global nav */}

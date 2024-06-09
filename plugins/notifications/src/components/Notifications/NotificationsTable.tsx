@@ -83,7 +83,7 @@ const SelectedActions = ({
 );
 
 const LoadMore = ({ loadMore }: LoadMoreProps) => (
-  <Box display="flex" justifyContent="flex-end" marginTop={2}>
+  <Box display="flex" justifyContent="flex-end" marginTop={2} data-testid="load-more-txt">
     <Link component="button" onClick={loadMore} style={{ minWidth: '100px' }}>
       Load more...
     </Link>
@@ -108,14 +108,14 @@ export const NotificationsTable = ({
 
   const renderActions = (rowData: Notification) => (
     <>
-      <IconButton onClick={() => onUpdateStatus([rowData.id], !rowData.read)}>
+      <IconButton data-testid="mark-read-btn" onClick={() => onUpdateStatus([rowData.id], !rowData.read)}>
         {rowData.read ? (
           <DoneAllIcon sx={{ color: '#0784c7' }} />
         ) : (
           <DoneIcon />
         )}
       </IconButton>
-      <IconButton onClick={() => onDelete([rowData.id])}>
+      <IconButton data-testid="delete-btn" onClick={() => onDelete([rowData.id])}>
         <DeleteOutlinedIcon />
       </IconButton>
     </>
