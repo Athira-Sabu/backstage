@@ -70,7 +70,11 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={CreateComponentIcon} to="create" text="Create..." />
-        <SidebarItem icon={NotificationsIcon} to="notifications" text="Notifications" />
+        <SidebarItem
+          icon={NotificationsIcon}
+          to="notifications"
+          text="Notifications"
+        />
 
         {/* End global nav */}
         <SidebarDivider />
@@ -80,7 +84,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
       </SidebarGroup>
       <SidebarSpace />
       <SidebarDivider />
-      <SidebarGroup 
+      <SidebarGroup
         label="Settings"
         icon={<UserSettingsSignInAvatar />}
         to="/settings"

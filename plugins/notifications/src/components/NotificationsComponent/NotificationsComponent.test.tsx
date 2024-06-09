@@ -22,8 +22,6 @@ describe('ExampleComponent', () => {
 
   it('should render', async () => {
     await renderInTestApp(<NotificationsComponent />);
-    expect(
-      screen.getByText('Welcome to notifications!'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Welcome to notifications!')).toBeInTheDocument();
   });
 });

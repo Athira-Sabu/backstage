@@ -17,8 +17,5 @@ describe('NotificationsFetchComponent', () => {
     expect(nationality[0]).toBeInTheDocument();
   });
 
-  it('should display data on fetch', () => {
-
-  });
-
+  it('should display data on fetch', () => {});
 });
