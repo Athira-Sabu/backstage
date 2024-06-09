@@ -57,4 +57,6 @@ e2e-test-report/
 
 # Sqlite files
 *.sqlite
+
 /plugins/notifications-backend/test-results/.last-run.json
+/plugins/notifications/test-results/.last-run.json
