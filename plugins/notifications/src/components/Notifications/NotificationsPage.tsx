@@ -9,9 +9,9 @@ import {
   HeaderLabel,
   SupportButton,
 } from '@backstage/core-components';
-import { NotificationsFetchComponent } from '../NotificationsFetchComponent';
+import {NotificationsPanel} from "./NotificationsPanel";
 
-export const NotificationsComponent = () => (
+export const NotificationsPage = () => (
   <Page themeId="tool">
     <Header
       title="Notifications!"
@@ -37,7 +37,7 @@ export const NotificationsComponent = () => (
           </InfoCard>
         </Grid>
         <Grid item>
-          <NotificationsFetchComponent />
+          <NotificationsPanel/>
         </Grid>
       </Grid>
     </Content>

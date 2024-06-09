@@ -29,8 +29,8 @@ export const NotificationsPage = notificationsPlugin.provide(
   createRoutableExtension({
     name: 'NotificationsPage',
     component: () =>
-      import('./components/NotificationsComponent').then(
-        m => m.NotificationsComponent,
+      import('./components').then(
+        m => m.NotificationsPage,
       ),
     mountPoint: rootRouteRef,
   }),

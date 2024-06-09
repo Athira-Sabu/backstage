@@ -1,5 +1,5 @@
 import React from 'react';
-import { NotificationsComponent } from './NotificationsComponent';
+import { NotificationsPage } from './NotificationsPage';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { screen } from '@testing-library/react';
@@ -21,7 +21,7 @@ describe('ExampleComponent', () => {
   });
 
   it('should render', async () => {
-    await renderInTestApp(<NotificationsComponent />);
+    await renderInTestApp(<NotificationsPage />);
     expect(screen.getByText('Welcome to notifications!')).toBeInTheDocument();
   });
 });

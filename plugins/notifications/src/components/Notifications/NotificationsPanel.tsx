@@ -11,7 +11,7 @@ import {
   DEFAULT_NOTIFICATION_LIMIT,
 } from '@internal/backstage-plugin-notifications-common/';
 
-export const NotificationsFetchComponent = () => {
+export const NotificationsPanel = () => {
   const notificationApi = useApi(notificationsApiRef);
   const { lastSignal } = useSignal<Notification>(CHANNEL_NEW_NOTIFICATION);
   const [notifications, setNotifications] = useState<Notification[]>([]);
