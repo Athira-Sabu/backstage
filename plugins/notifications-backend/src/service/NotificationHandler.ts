@@ -1,5 +1,5 @@
 import {getUser} from "./User";
-import {Notification, NotificationFetchOptions} from "../types";
+import {Notification, NotificationFetchOptions} from "@internal/backstage-plugin-notifications-common";
 import {RouterOptions} from "./Router";
 import express from "express";
 import {publishSignals} from "./SignalsHandler";
@@ -15,7 +15,7 @@ export const handleGetNotifications = async (req: express.Request, res: express.
         cursor: req.query.cursor ? Number(req.query.cursor) : undefined,
         limit: req.query.limit ? Number(req.query.limit) : undefined,
         read: req.query.read ? req.query.read === 'true' : undefined,
-        createdAfter: req.query.createdAfter ? new Date(req.query.createdAfter) : undefined,
+        createdAfter: req.query.createdAfter ? String(req.query.createdAfter) : undefined,
         origin: req.query.origin ? String(req.query.origin) : undefined,
     };
     const notifications = await options.notificationsStore.getAll(fetchOptions);
@@ -25,7 +25,6 @@ export const handleGetNotifications = async (req: express.Request, res: express.
 export const handlePostNotification = async (req: express.Request, res: express.Response, options: RouterOptions): Promise<void> => {
     try {
         const notification = req.body;
-        console.log("inside post>>>>>>", notification);
         // TODO how to handle user auth in scenario of insert from mockserver?
         // handle validation as well
         // const user = await getUser(req, httpAuth, userInfo);
@@ -38,7 +37,6 @@ export const handlePostNotification = async (req: express.Request, res: express.
         const valid = validate(notification);
 
         if (!valid) {
-            console.log("inside ivalid>>>>>>", validate.errors);
             options.logger.error(`Validation error: ${validate.errors}`);
             res.status(400).json({ error: 'Invalid notification data', details: validate.errors });
             return;

@@ -8,8 +8,7 @@ import {mockServices} from "@backstage/backend-test-utils";
 import {SignalsService} from "@backstage/plugin-signals-node";
 import {NotificationStore} from "../database/NotificationStore";
 import {NotificationStoreInterface} from "../database/NotificationStoreInterface";
-import {Notification} from "../types";
-import {CHANNEL_NEW_NOTIFICATION, Notification_Priority} from "../constants";
+import {CHANNEL_NEW_NOTIFICATION, Notification_Priority, Notification} from "@internal/backstage-plugin-notifications-common";
 import {Knex} from "knex";
 
 function createDatabase(): PluginDatabaseManager {
@@ -34,7 +33,7 @@ const testNotifications: Notification[] = [
         read: false,
         priority: Notification_Priority.LOW,
         origin: 'test'
-    } as Notification,
+    },
     {
         id: 2,
         message: 'Notification 2',
@@ -43,7 +42,7 @@ const testNotifications: Notification[] = [
         user: 'user:default/mock',
         read: false,
         origin: 'test'
-    } as Notification,
+    },
     {
         id: 3,
         message: 'Notification 3',
@@ -52,7 +51,7 @@ const testNotifications: Notification[] = [
         user: 'user:default/mock',
         read: false,
         origin: 'test'
-    } as Notification
+    }
 ];
 const otherUserNotification: Notification = {
     id: 4,
@@ -62,7 +61,7 @@ const otherUserNotification: Notification = {
     user: 'user:default/other-user',
     read: false,
     origin: 'test'
-} as Notification
+}
 const user = 'user:default/mock';
 
 describe('createRouter', () => {

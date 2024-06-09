@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import {Notification_Priority} from "../src/constants";
+import {Notification_Priority} from "@internal/backstage-plugin-notifications-common"
 
 
 export async function up(knex: Knex): Promise<void> {

@@ -1,7 +1,7 @@
 import {LoggerService, resolvePackagePath} from "@backstage/backend-plugin-api";
 import {Knex} from "knex";
 
-import {Notification, NotificationFetchOptions, NotificationId} from "../types";
+import {Notification, NotificationFetchOptions, NotificationId} from "@internal/backstage-plugin-notifications-common"
 import {NotificationStoreInterface} from "./NotificationStoreInterface";
 import {PluginDatabaseManager} from "@backstage/backend-common";
 

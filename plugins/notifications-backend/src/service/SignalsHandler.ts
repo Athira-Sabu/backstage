@@ -1,7 +1,7 @@
 import {SignalsService} from "@backstage/plugin-signals-node";
-import {Notification} from "../types";
+import {Notification} from "@internal/backstage-plugin-notifications-common";
 import {LoggerService} from "@backstage/backend-plugin-api";
-import {CHANNEL_NEW_NOTIFICATION} from "../constants";
+import {CHANNEL_NEW_NOTIFICATION} from "@internal/backstage-plugin-notifications-common";
 
 export const publishSignals = async (signals: SignalsService, notification: Notification, logger: LoggerService): Promise<void> => {
     try {

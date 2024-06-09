@@ -1,19 +1,30 @@
-/***/
-/**
- * Common functionalities for the notifications plugin.
- *
- * @packageDocumentation
- */
+export const  CHANNEL_NEW_NOTIFICATION = 'notifications:newNotification';
+export const DEFAULT_NOTIFICATION_LIMIT = 10;
 
-/**
- * In this package you might for example declare types that are common
- * between the frontend and backend plugin packages.
- */
-export type CommonType = {
-  field: string;
+export type Notification = {
+  id: number;
+  priority: Notification_Priority;
+  title: string;
+  user: string;
+  message: string;
+  origin: string;
+  read: boolean;
+  createdAt?: string;
+}
+
+export type NotificationId = Notification['id'];
+
+export enum Notification_Priority {
+  LOW = 'low',
+  NORMAL = 'normal',
+  HIGH = 'high',
 };
 
-/**
- * Or you might declare some common constants.
- */
-export const COMMON_CONSTANT = 1;
+export type NotificationFetchOptions = {
+  user: string;
+  cursor?: number;
+  limit?: number;
+  read?: boolean;
+  createdAfter?: string;
+  origin?: string;
+};

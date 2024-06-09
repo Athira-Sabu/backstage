@@ -7,9 +7,9 @@ import {
 import useAsync from 'react-use/lib/useAsync';
 import {notificationsApiRef} from "../../api/NotificationsApi";
 import {useSignal} from '@backstage/plugin-signals-react';
-import {Notification} from "../../types";
 import {NotificationsTable} from './NotificationsTable';
-import {CHANNEL_NEW_NOTIFICATION, DEFAULT_NOTIFICATION_LIMIT} from '../../constants';
+import {Notification, CHANNEL_NEW_NOTIFICATION, DEFAULT_NOTIFICATION_LIMIT} from "@internal/backstage-plugin-notifications-common/";
+
 
 export const NotificationsFetchComponent = () => {
     const notificationApi = useApi(notificationsApiRef);
@@ -18,7 +18,10 @@ export const NotificationsFetchComponent = () => {
     const [cursor, setCursor] = useState<number | undefined>(undefined);
     const [hasMore, setHasMore] = useState(true);
 
-    const fetchNotifications = async (cursor: number | undefined) => {
+    const updateNotifications = (updateFunc: (prevNotifications: Notification[]) => Notification[]) => {
+        setNotifications(updateFunc);
+    };
+    const fetchNotifications = async () => {
         const fetchedNotifications = await notificationApi.getNotifications({
             cursor,
             limit: DEFAULT_NOTIFICATION_LIMIT
@@ -28,12 +31,10 @@ export const NotificationsFetchComponent = () => {
         setHasMore(fetchedNotifications.length === DEFAULT_NOTIFICATION_LIMIT);
 
     };
-    const updateNotifications = (updateFunc: (prevNotifications: Notification[]) => Notification[]) => {
-        setNotifications(updateFunc);
-    };
+
 
     const {loading, error} = useAsync(async (): Promise<void> => {
-        await fetchNotifications(cursor);
+        await fetchNotifications();
     }, []);
     
     useEffect(() => {
@@ -63,7 +64,7 @@ export const NotificationsFetchComponent = () => {
     }
     return (
         <NotificationsTable notifications={notifications || []}
-                            loadMore={hasMore ? async () => await fetchNotifications(cursor) : undefined}
+                            loadMore={hasMore ? async () => await fetchNotifications() : undefined}
                             onDelete={deleteNotifications} onUpdateStatus={updateStatus}/>
     );
 };

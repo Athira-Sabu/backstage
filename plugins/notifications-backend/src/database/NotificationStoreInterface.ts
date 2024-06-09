@@ -1,4 +1,4 @@
-import { NotificationFetchOptions, Notification, NotificationId } from "../types";
+import { NotificationFetchOptions, Notification, NotificationId } from "@internal/backstage-plugin-notifications-common";
 
 export interface NotificationStoreInterface {
     getAll(options: NotificationFetchOptions): Promise<Notification[]>;

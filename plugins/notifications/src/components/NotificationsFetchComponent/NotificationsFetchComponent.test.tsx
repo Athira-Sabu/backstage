@@ -16,4 +16,9 @@ describe('ExampleFetchComponent', () => {
     expect(screen.getByText('carolyn.moore@example.com')).toBeInTheDocument();
     expect(nationality[0]).toBeInTheDocument();
   });
+
+  it('should display data on fetch', () => {
+
+  });
+
 });

@@ -6,7 +6,8 @@ import DoneAllIcon from '@mui/icons-material/DoneAll';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import Tooltip from '@mui/material/Tooltip';
 import {useCallback, useState} from 'react';
-import {Notification} from "../../types";
+import {Notification} from "@internal/backstage-plugin-notifications-common/";
+
 import {
     Table,
     TableColumn,
