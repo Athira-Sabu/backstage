@@ -8,7 +8,11 @@ import useAsync from 'react-use/lib/useAsync';
 import {notificationsApiRef} from "../../api/NotificationsApi";
 import {useSignal} from '@backstage/plugin-signals-react';
 import {NotificationsTable} from './NotificationsTable';
-import {Notification, CHANNEL_NEW_NOTIFICATION, DEFAULT_NOTIFICATION_LIMIT} from "@internal/backstage-plugin-notifications-common/";
+import {
+    Notification,
+    CHANNEL_NEW_NOTIFICATION,
+    DEFAULT_NOTIFICATION_LIMIT
+} from "@internal/backstage-plugin-notifications-common/";
 
 
 export const NotificationsFetchComponent = () => {
@@ -17,6 +21,8 @@ export const NotificationsFetchComponent = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [cursor, setCursor] = useState<number | undefined>(undefined);
     const [hasMore, setHasMore] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
+
 
     const updateNotifications = (updateFunc: (prevNotifications: Notification[]) => Notification[]) => {
         setNotifications(updateFunc);
@@ -32,11 +38,16 @@ export const NotificationsFetchComponent = () => {
 
     };
 
-
-    const {loading, error} = useAsync(async (): Promise<void> => {
+    const {loading, error: asyncError} = useAsync(async (): Promise<void> => {
         await fetchNotifications();
     }, []);
-    
+
+    useEffect(() => {
+        if (asyncError) {
+            setError(asyncError);
+        }
+    }, [asyncError]);
+
     useEffect(() => {
         if (lastSignal) {
             updateNotifications(prevNotifications => [lastSignal, ...prevNotifications]);
@@ -45,17 +56,28 @@ export const NotificationsFetchComponent = () => {
 
     const deleteNotifications = async (ids: number[]) => {
         await notificationApi.deleteNotifications(ids)
-        updateNotifications(prevNotifications => prevNotifications
-            .filter(notification => !ids.includes(notification.id)));
+            .then(() => {
+                updateNotifications(prevNotifications => prevNotifications
+                    .filter(notification => !ids.includes(notification.id)));
+            })
+            .catch(e => {
+                setError(e)
+            });
+
     }
     const updateStatus = async (ids: number[], status: boolean) => {
-        await notificationApi.updateStatus(ids, status);
-        updateNotifications(prevNotifications => prevNotifications.map(notification => {
-            if (ids.includes(notification.id)) {
-                return {...notification, read: status};
-            }
-            return notification;
-        }));
+        await notificationApi.updateStatus(ids, status)
+            .then(() => {
+                updateNotifications(prevNotifications => prevNotifications.map(notification => {
+                    if (ids.includes(notification.id)) {
+                        return {...notification, read: status};
+                    }
+                    return notification;
+                }));
+            })
+            .catch(e => {
+                setError(e);
+            });
     }
     if (loading) {
         return <Progress/>;

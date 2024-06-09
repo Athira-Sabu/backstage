@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { NotificationsFetchComponent } from './NotificationsFetchComponent';
 
-describe('ExampleFetchComponent', () => {
-  it('renders the user table', async () => {
+describe('NotificationsFetchComponent', () => {
+  it('renders the notifications table', async () => {
     render(<NotificationsFetchComponent />);
 
     // Wait for the table to render

@@ -2,7 +2,6 @@ import {DiscoveryApi, FetchApi} from "@backstage/core-plugin-api";
 import {NotificationsApi} from "./NotificationsApi";
 import {Notification, NotificationFetchOptions} from "@internal/backstage-plugin-notifications-common/";
 
-
 export class NotificationsClient  implements NotificationsApi {  // TODO change
     private readonly discoveryApi: DiscoveryApi;
     private readonly fetchApi: FetchApi;
