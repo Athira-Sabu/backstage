@@ -38,15 +38,12 @@ export const handlePostNotification = async (
 ): Promise<void> => {
   try {
     const notification = req.body;
-    // TODO how to handle user auth in scenario of insert from mockserver?
-    // handle validation as well
-    // const user = await getUser(req, httpAuth, userInfo);
-    //
-    // if (!user) {
-    //     logger.error('Invalid user');
-    //     res.status(400).json({error: 'Invalid user'});
-    //     return;
-    // }
+    const user = await getUser(req, options.httpAuth, options.userInfo);
+    if (!user) {
+        options.logger.error('Invalid user');
+        res.status(400).json({error: 'Invalid user'});
+        return;
+    }
     const valid = validate(notification);
 
     if (!valid) {
@@ -57,8 +54,8 @@ export const handlePostNotification = async (
       return;
     }
     const validNotification = notification as Notification;
-    await options.notificationsStore.insert(validNotification);
-    await publishSignals(options.signals, validNotification, options.logger);
+    const id = await options.notificationsStore.insert(validNotification);
+    await publishSignals(options.signals, {...validNotification, id}, options.logger);
     res.status(201).end();
   } catch (error) {
     options.logger.error(`Failed to save notification: ${error}`);

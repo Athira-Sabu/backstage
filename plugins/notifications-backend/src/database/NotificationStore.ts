@@ -67,9 +67,10 @@ export class NotificationStore implements NotificationStoreInterface {
   }
 
   async insert(notification: Notification): Promise<NotificationId> {
-    return await this.client(NOTIFICATION_TABLE)
+    const insertedIds =  await this.client(NOTIFICATION_TABLE)
       .insert(notification)
       .returning('id');
+    return insertedIds[0].id;
   }
 
   async updateStatus(
