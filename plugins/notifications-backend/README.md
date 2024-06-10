@@ -7,7 +7,7 @@ Welcome to the notifications backend plugin!
 This backend plugin for Backstage is designed to handle notifications from various sources, providing APIs for fetching,
 updating, and deleting notifications. It also integrates a real-time notifications feature using WebSockets.
 
-## Features
+## Components
 
 - **CRUD Operations**: APIs to create, read, update, and delete notifications.
 - **Real-time Notifications**: Utilizes Backstage Signals plugin for real-time notifications through WebSocket
