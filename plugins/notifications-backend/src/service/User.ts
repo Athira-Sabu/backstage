@@ -9,7 +9,9 @@ export const getUser = async (
   httpAuth: HttpAuthService,
   userInfo: UserInfoService,
 ): Promise<string> => {
-  const credentials = await httpAuth.credentials(req, { allow: ['user', 'service'] });
+  const credentials = await httpAuth.credentials(req, {
+    allow: ['user', 'service'],
+  });
 
   if (credentials.principal.type === 'service') {
     return req.body.user;

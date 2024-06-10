@@ -40,9 +40,9 @@ export const handlePostNotification = async (
     const notification = req.body;
     const user = await getUser(req, options.httpAuth, options.userInfo);
     if (!user) {
-        options.logger.error('Invalid user');
-        res.status(400).json({error: 'Invalid user'});
-        return;
+      options.logger.error('Invalid user');
+      res.status(400).json({ error: 'Invalid user' });
+      return;
     }
     const valid = validate(notification);
 
@@ -55,7 +55,11 @@ export const handlePostNotification = async (
     }
     const validNotification = notification as Notification;
     const id = await options.notificationsStore.insert(validNotification);
-    await publishSignals(options.signals, {...validNotification, id}, options.logger);
+    await publishSignals(
+      options.signals,
+      { ...validNotification, id },
+      options.logger,
+    );
     res.status(201).end();
   } catch (error) {
     options.logger.error(`Failed to save notification: ${error}`);
