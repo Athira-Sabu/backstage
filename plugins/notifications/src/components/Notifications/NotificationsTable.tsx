@@ -1,4 +1,4 @@
-import { Box, Checkbox, IconButton, Link } from '@material-ui/core';
+import { Box, Checkbox, IconButton, Link, makeStyles } from '@material-ui/core';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import DoneIcon from '@mui/icons-material/Done';
@@ -11,6 +11,20 @@ import { Notification } from '@internal/backstage-plugin-notifications-common/';
 import { Table, TableColumn, TableFilter } from '@backstage/core-components';
 import React from 'react';
 
+export const titleStyles = makeStyles({
+  showMoreText: {
+    color: '#0784c7',
+    textDecoration: 'underline',
+    cursor: 'pointer',
+    marginTop: 5,
+  },
+});
+
+export const loadMoreStyles = makeStyles({
+  loadMoreButton: {
+    minWidth: '100px',
+  },
+});
 interface NotificationsTableProps {
   notifications: Notification[];
   loadMore?: () => void;
@@ -35,6 +49,7 @@ interface LoadMoreProps {
 
 const Title = ({ title, message }: TitleProps) => {
   const [showMore, setShowMore] = useState(false);
+  const classes = titleStyles();
 
   return (
     <>
@@ -44,12 +59,7 @@ const Title = ({ title, message }: TitleProps) => {
         {message.length > 100 && (
           <div
             onClick={() => setShowMore(!showMore)}
-            style={{
-              color: '#0784c7',
-              textDecoration: 'underline',
-              cursor: 'pointer',
-              marginTop: 5,
-            }}
+            className={classes.showMoreText}
           >
             {showMore ? 'Show less' : 'Show more'}
           </div>
@@ -82,18 +92,25 @@ const SelectedActions = ({
   </Box>
 );
 
-const LoadMore = ({ loadMore }: LoadMoreProps) => (
-  <Box
-    display="flex"
-    justifyContent="flex-end"
-    marginTop={2}
-    data-testid="load-more-txt"
-  >
-    <Link component="button" onClick={loadMore} style={{ minWidth: '100px' }}>
-      Load more...
-    </Link>
-  </Box>
-);
+const LoadMore = ({ loadMore }: LoadMoreProps) => {
+  const classes = loadMoreStyles();
+  return (
+    <Box
+      display="flex"
+      justifyContent="flex-end"
+      marginTop={2}
+      data-testid="load-more-txt"
+    >
+      <Link
+        component="button"
+        onClick={loadMore}
+        className={classes.loadMoreButton}
+      >
+        Load more...
+      </Link>
+    </Box>
+  );
+};
 
 export const NotificationsTable = ({
   notifications,
