@@ -38,12 +38,6 @@ export const handlePostNotification = async (
 ): Promise<void> => {
   try {
     const notification = req.body;
-    const user = await getUser(req, options.httpAuth, options.userInfo);
-    if (!user) {
-      options.logger.error('Invalid user');
-      res.status(400).json({ error: 'Invalid user' });
-      return;
-    }
     const valid = validate(notification);
 
     if (!valid) {
