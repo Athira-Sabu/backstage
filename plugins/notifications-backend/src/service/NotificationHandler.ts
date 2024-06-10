@@ -24,18 +24,18 @@ export const handleGetNotifications = async (
       limit: req.query.limit ? Number(req.query.limit) : undefined,
       read: req.query.read ? req.query.read === 'true' : undefined,
       createdAfter: req.query.createdAfter
-          ? String(req.query.createdAfter)
-          : undefined,
+        ? String(req.query.createdAfter)
+        : undefined,
       origin: req.query.origin ? String(req.query.origin) : undefined,
     };
     const notifications = await options.notificationsStore.getAll(fetchOptions);
     res.send(notifications);
-  }
-  catch (error) {
+  } catch (error) {
     options.logger.error(`Failed to get the notifications: ${error}`);
-    res.status(500).send({ error: "An error occurred while fetching notifications." });
+    res
+      .status(500)
+      .send({ error: 'An error occurred while fetching notifications.' });
   }
-
 };
 
 export const handlePostNotification = async (

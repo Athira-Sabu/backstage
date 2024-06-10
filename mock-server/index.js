@@ -49,9 +49,12 @@ const sendNotification = async () => {
     }),
   }).then(async res => {
     console.log('Response', res.status);
-    if (res.headers.get('content-length') > '0' && res.headers.get('content-type')?.includes('application/json')) {
-      const jsonResponse = await res.json(); // Parse the response body as JSON
-      console.log('Response Body:', jsonResponse); // Log the parsed JSON response
+    if (
+      res.headers.get('content-length') > '0' &&
+      res.headers.get('content-type')?.includes('application/json')
+    ) {
+      const jsonResponse = await res.json();
+      console.log('Response Body:', jsonResponse);
     }
     rl.close();
   });
