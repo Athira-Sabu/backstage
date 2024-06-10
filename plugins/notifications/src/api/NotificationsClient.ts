@@ -42,26 +42,24 @@ export class NotificationsClient implements NotificationsApi {
   }
 
   private async request<T>(
-    path: string,
-    init: RequestInit & { params?: Record<string, string> } = {},
+      path: string,
+      init: RequestInit & { params?: Record<string, string> } = {},
   ): Promise<T> {
     const baseUrl = `${await this.discoveryApi.getBaseUrl('notifications')}`;
     const url = new URL(path, baseUrl);
 
     if (init.params) {
-      Object.keys(init.params).forEach(key =>
-        url.searchParams.append(key, init.params?.[key]),
-      );
+      const searchParams = new URLSearchParams(init.params);
+      url.search = searchParams.toString();
     }
+
     init.headers = { 'Content-Type': 'application/json' };
     const response = await this.fetchApi.fetch(url.toString(), init);
 
     if (!response.ok) {
-      throw new Error(
-        `Request failed: ${response.status} ${response.statusText}`,
-      );
+      throw new Error(`Request failed: ${response.status} ${response.statusText}`);
     }
 
-    return response.json() as Promise<T>;
+    return await response.json() as Promise<T>;
   }
 }

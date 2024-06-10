@@ -16,19 +16,26 @@ export const handleGetNotifications = async (
   res: express.Response,
   options: RouterOptions,
 ): Promise<void> => {
-  const user = await getUser(req, options.httpAuth, options.userInfo);
-  const fetchOptions: NotificationFetchOptions = {
-    user,
-    cursor: req.query.cursor ? Number(req.query.cursor) : undefined,
-    limit: req.query.limit ? Number(req.query.limit) : undefined,
-    read: req.query.read ? req.query.read === 'true' : undefined,
-    createdAfter: req.query.createdAfter
-      ? String(req.query.createdAfter)
-      : undefined,
-    origin: req.query.origin ? String(req.query.origin) : undefined,
-  };
-  const notifications = await options.notificationsStore.getAll(fetchOptions);
-  res.send(notifications);
+  try {
+    const user = await getUser(req, options.httpAuth, options.userInfo);
+    const fetchOptions: NotificationFetchOptions = {
+      user,
+      cursor: req.query.cursor ? Number(req.query.cursor) : undefined,
+      limit: req.query.limit ? Number(req.query.limit) : undefined,
+      read: req.query.read ? req.query.read === 'true' : undefined,
+      createdAfter: req.query.createdAfter
+          ? String(req.query.createdAfter)
+          : undefined,
+      origin: req.query.origin ? String(req.query.origin) : undefined,
+    };
+    const notifications = await options.notificationsStore.getAll(fetchOptions);
+    res.send(notifications);
+  }
+  catch (error) {
+    options.logger.error(`Failed to get the notifications: ${error}`);
+    res.status(500).send({ error: "An error occurred while fetching notifications." });
+  }
+
 };
 
 export const handlePostNotification = async (
