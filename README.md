@@ -18,6 +18,8 @@ following plugin:
 
 ### Notifications Plugin:
 
-A plugin designed to manage and display notifications. It provides features such as creating,
-reading, updating, and deleting notifications. For more details, refer to the
-About the project and testing instructions - [Notifications Plugin Readme](plugins/notifications/README.md)
+This plugin is designed to simplify the management and display of notifications. It includes a range of functionalities,
+such as storing, retrieving, modifying, and removing notifications.
+
+For detailed information about the project and step-by-step testing instructions, please refer to the Notifications
+Plugin Readme. - [Notifications Plugin Readme](plugins/notifications/README.md)

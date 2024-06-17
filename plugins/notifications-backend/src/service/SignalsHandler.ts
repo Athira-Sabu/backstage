@@ -16,5 +16,6 @@ export const publishSignals = async (
     });
   } catch (e) {
     logger.error(`Failed to send signal: ${e}`);
+    throw new Error('Failed to send signal');
   }
 };

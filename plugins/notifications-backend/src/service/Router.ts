@@ -10,7 +10,7 @@ import { SignalsService } from '@backstage/plugin-signals-node';
 import {
   handleDeleteNotifications,
   handleGetNotifications,
-  handlePostNotification,
+  handleCreateNotification,
   handleUpdateNotificationStatus,
 } from './NotificationHandler';
 import { NotificationStoreInterface } from '../database/NotificationStoreInterface';
@@ -38,7 +38,7 @@ export async function createRouter(
   router.post(
     '/',
     async (req: express.Request, res: express.Response): Promise<void> =>
-      handlePostNotification(req, res, options),
+      handleCreateNotification(req, res, options),
   );
 
   router.put(

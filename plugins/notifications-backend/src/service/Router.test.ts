@@ -112,7 +112,7 @@ describe('createRouter', () => {
   describe('GET /', () => {
     it('should return all notifications', async () => {
       for (const notification of testNotifications) {
-        await notificationsStore.insert(notification);
+        await notificationsStore.saveNotification(notification);
       }
       const response = await request(app).get('/');
       expect(response.status).toEqual(200);
@@ -123,8 +123,8 @@ describe('createRouter', () => {
     });
     it('should return notifications for a specific user', async () => {
       const currentUserNotification = testNotifications[0];
-      await notificationsStore.insert(currentUserNotification);
-      await notificationsStore.insert(otherUserNotification);
+      await notificationsStore.saveNotification(currentUserNotification);
+      await notificationsStore.saveNotification(otherUserNotification);
       const response = await request(app).get('/');
       expect(response.status).toEqual(200);
       expect(response.body.length).toEqual(1);
@@ -133,7 +133,7 @@ describe('createRouter', () => {
     });
     it('should works for cursor pagination', async () => {
       for (const notification of testNotifications) {
-        await notificationsStore.insert(notification);
+        await notificationsStore.saveNotification(notification);
       }
       const response = await request(app)
         .get('/')
@@ -153,10 +153,12 @@ describe('createRouter', () => {
           message: expect.objectContaining({ id: testNotifications[0].id }),
         }),
       );
-      await notificationsStore.getAll({ user: user }).then(notifications => {
-        expect(notifications.length).toEqual(1);
-        expect(notifications[0].id).toEqual(testNotifications[0].id);
-      });
+      await notificationsStore
+        .getNotifications({ user: user })
+        .then(notifications => {
+          expect(notifications.length).toEqual(1);
+          expect(notifications[0].id).toEqual(testNotifications[0].id);
+        });
     });
     it('should return 400 for invalid notification data', async () => {
       const invalidNotification = {
@@ -171,7 +173,7 @@ describe('createRouter', () => {
 
   describe('PUT /status', () => {
     it('should update the read status of notifications', async () => {
-      await notificationsStore.insert(testNotifications[0]);
+      await notificationsStore.saveNotification(testNotifications[0]);
       const response = await request(app)
         .put('/status')
         .send({
@@ -179,7 +181,7 @@ describe('createRouter', () => {
           status: true,
         });
       expect(response.status).toEqual(200);
-      const updatedNotification = await notificationsStore.getAll({
+      const updatedNotification = await notificationsStore.getNotifications({
         user: user,
       });
       expect(updatedNotification[0].read).toBe(true);
@@ -189,12 +191,12 @@ describe('createRouter', () => {
   describe('DELETE /', () => {
     it('should delete specified notifications', async () => {
       for (const notification of testNotifications) {
-        await notificationsStore.insert(notification);
+        await notificationsStore.saveNotification(notification);
       }
       const idsToDelete = [testNotifications[0].id, testNotifications[1].id];
       const response = await request(app).delete('/').send(idsToDelete);
       expect(response.status).toEqual(200);
-      const remainingNotifications = await notificationsStore.getAll({
+      const remainingNotifications = await notificationsStore.getNotifications({
         user: user,
       });
       expect(remainingNotifications).toHaveLength(

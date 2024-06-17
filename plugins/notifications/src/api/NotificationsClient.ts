@@ -3,6 +3,8 @@ import { NotificationsApi } from './NotificationsApi';
 import {
   Notification,
   NotificationFetchOptions,
+  HttpMethod,
+  UpdateStatusParams,
 } from '@internal/backstage-plugin-notifications-common/';
 
 export class NotificationsClient implements NotificationsApi {
@@ -22,46 +24,55 @@ export class NotificationsClient implements NotificationsApi {
   ): Promise<Notification[]> {
     const params = options || {};
     return await this.request<Notification[]>('notifications', {
-      method: 'GET',
+      method: HttpMethod.GET,
       params,
     });
   }
 
-  async updateStatus(ids: number[], status: boolean): Promise<void> {
+  async updateStatus(params: UpdateStatusParams): Promise<void> {
     await this.request<{ message: string }>('notifications/status', {
-      method: 'PUT',
-      body: JSON.stringify({ ids, status }),
+      method: HttpMethod.PUT,
+      body: JSON.stringify(params),
     });
   }
 
   async deleteNotifications(ids: number[]): Promise<void> {
     await this.request<{ message: string }>('notifications', {
-      method: 'DELETE',
+      method: HttpMethod.DELETE,
       body: JSON.stringify(ids),
     });
   }
 
   private async request<T>(
     path: string,
-    init: RequestInit & { params?: Record<string, string> } = {},
+    requestOptions: RequestInit & { params?: Record<string, string> } = {},
   ): Promise<T> {
-    const baseUrl = `${await this.discoveryApi.getBaseUrl('notifications')}`;
-    const url = new URL(path, baseUrl);
+    try {
+      const baseUrl = `${await this.discoveryApi.getBaseUrl('notifications')}`;
+      const url = new URL(path, baseUrl);
 
-    if (init.params) {
-      const searchParams = new URLSearchParams(init.params);
-      url.search = searchParams.toString();
-    }
+      if (requestOptions.params) {
+        const searchParams = new URLSearchParams(requestOptions.params);
+        url.search = searchParams.toString();
+      }
 
-    init.headers = { 'Content-Type': 'application/json' };
-    const response = await this.fetchApi.fetch(url.toString(), init);
-
-    if (!response.ok) {
-      throw new Error(
-        `Request failed: ${response.status} ${response.statusText}`,
+      requestOptions.headers = requestOptions.headers || {
+        'Content-Type': 'application/json',
+      };
+      const response = await this.fetchApi.fetch(
+        url.toString(),
+        requestOptions,
       );
-    }
 
-    return (await response.json()) as Promise<T>;
+      if (!response.ok) {
+        throw new Error(
+          `Request failed: ${response.status} ${response.statusText}`,
+        );
+      }
+
+      return (await response.json()) as Promise<T>;
+    } catch (error) {
+      throw error;
+    }
   }
 }

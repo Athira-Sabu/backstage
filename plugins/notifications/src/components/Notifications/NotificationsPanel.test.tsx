@@ -92,6 +92,9 @@ describe('NotificationsPanel', () => {
     });
     const component = await renderWrapped(<NotificationsPanel />);
     fireEvent.click(component.getByTestId('mark-read-btn'));
-    expect(mockNotificationsApi.updateStatus).toHaveBeenCalledWith([1], true);
+    expect(mockNotificationsApi.updateStatus).toHaveBeenCalledWith({
+      ids: [1],
+      status: true,
+    });
   });
 });

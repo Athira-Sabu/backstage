@@ -11,8 +11,7 @@ and custom-developed tools. It aims to provide a unified notifications interface
 ### Features
 
 - **Frontend Plugin**: Displays notifications in a dedicated page within Backstage.
-- **Backend Plugin**: Stores notifications in a database, fetches new notifications via REST API endpoints and Web
-  Sockets.
+- **Backend Plugin**: Stores notifications in a database, fetches new notifications via REST API endpoints and WebSockets.
 - **Common Plugin**: Contains shared types and utilities used by both the backend and frontend plugins.
 
 ![Notification UI](../../assets/notifications/Notifications_UI.png)
@@ -42,7 +41,7 @@ yarn dev
 ```
 
 These commands will install the dependencies and start the Backstage whole app. App will start
-in [/notifications](http://localhost:3000/notifications)
+in http://localhost:3000/notifications
 
 ## Testing
 

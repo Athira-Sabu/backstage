@@ -1,6 +1,6 @@
 # Notifications common plugin
 
-Welcome to the common package for the notifications plugin!
+Welcome to the common package for the notifications common plugin!
 
 This package contains shared types and utilities used by both
 the [notifications backend](plugins/notifications-backend/README.md)
