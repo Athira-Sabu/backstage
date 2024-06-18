@@ -31,7 +31,7 @@ export const notificationsPlugin = createBackendPlugin({
         httpAuth,
         userInfo,
       }) {
-        const notificationsStore = await NotificationStore.create(
+        const notificationsStore = await NotificationStore.getInstance(
           database,
           logger,
         );

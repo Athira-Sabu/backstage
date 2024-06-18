@@ -7,6 +7,7 @@ import { useSignal } from '@backstage/plugin-signals-react';
 import { NotificationsTable } from './NotificationsTable';
 import {
   Notification,
+  NotificationId,
   CHANNEL_NEW_NOTIFICATION,
   DEFAULT_NOTIFICATION_LIMIT,
 } from '@internal/backstage-plugin-notifications-common/';
@@ -15,7 +16,7 @@ export const NotificationsPanel = () => {
   const notificationApi = useApi(notificationsApiRef);
   const { lastSignal } = useSignal<Notification>(CHANNEL_NEW_NOTIFICATION);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [cursor, setCursor] = useState<number | undefined>(undefined);
+  const [cursor, setCursor] = useState<NotificationId | undefined>(undefined);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -56,7 +57,7 @@ export const NotificationsPanel = () => {
     }
   }, [lastSignal]);
 
-  const deleteNotifications = async (ids: number[]) => {
+  const deleteNotifications = async (ids: NotificationId[]) => {
     await notificationApi
       .deleteNotifications(ids)
       .then(() => {
@@ -70,9 +71,9 @@ export const NotificationsPanel = () => {
         setError(e);
       });
   };
-  const updateStatus = async (ids: number[], status: boolean) => {
+  const updateStatus = async (ids: NotificationId[], status: boolean) => {
     await notificationApi
-      .updateStatus(ids, status)
+      .updateStatus({ ids, status })
       .then(() => {
         updateNotifications(prevNotifications =>
           prevNotifications.map(notification => {

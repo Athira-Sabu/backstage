@@ -8,6 +8,7 @@ import {
   Notification,
   NotificationFetchOptions,
   NotificationId,
+  UpdateStatusParams,
 } from '@internal/backstage-plugin-notifications-common';
 import { NotificationStoreInterface } from './NotificationStoreInterface';
 import { PluginDatabaseManager } from '@backstage/backend-common';
@@ -17,29 +18,60 @@ const migrationsDir = resolvePackagePath(
   'migrations',
 );
 const NOTIFICATION_TABLE = 'notification';
+const NOTIFICATION_COLUMNS = {
+  ID: 'id',
+  PRIORITY: 'priority',
+  TITLE: 'title',
+  USER: 'user',
+  MESSAGE: 'message',
+  ORIGIN: 'origin',
+  READ: 'read',
+  CREATE_AT: 'create_at',
+};
 
 export class NotificationStore implements NotificationStoreInterface {
+  private static instance: NotificationStore | null = null;
+
   private constructor(private readonly client: Knex) {}
 
-  static async create(
+  static async getInstance(
     database: PluginDatabaseManager,
     logger: LoggerService,
   ): Promise<NotificationStoreInterface> {
-    const client = await database.getClient();
-    await client.migrate.latest({
-      directory: migrationsDir,
-    });
+    if (!NotificationStore.instance) {
+      try {
+        const client = await database.getClient();
+        await client.migrate.latest({
+          directory: migrationsDir,
+        });
 
-    logger.info('Migrations successfully ran for notifications plugin');
-    return new NotificationStore(client);
+        logger.info('Migrations successfully ran for notifications plugin');
+        NotificationStore.instance = new NotificationStore(client);
+      } catch (error) {
+        logger.error('Failed to initialize NotificationStore');
+        throw error;
+      }
+    }
+    return NotificationStore.instance;
   }
 
-  async getAll(options: NotificationFetchOptions): Promise<Notification[]> {
+  async getNotifications(
+    options: NotificationFetchOptions,
+  ): Promise<Notification[]> {
     let query = this.client(NOTIFICATION_TABLE)
-      .select('*')
-      .where('user', options.user);
+      .select(
+        NOTIFICATION_COLUMNS.ID,
+        NOTIFICATION_COLUMNS.PRIORITY,
+        NOTIFICATION_COLUMNS.TITLE,
+        NOTIFICATION_COLUMNS.USER,
+        NOTIFICATION_COLUMNS.MESSAGE,
+        NOTIFICATION_COLUMNS.ORIGIN,
+        NOTIFICATION_COLUMNS.READ,
+        NOTIFICATION_COLUMNS.CREATE_AT,
+      )
+      .where(NOTIFICATION_COLUMNS.USER, options.user);
     if (options.cursor) {
-      query = query.where('id', '<', options.cursor);
+      query = query.where(NOTIFICATION_COLUMNS.ID, '<', options.cursor);
     }
 
     if (options.limit) {
@@ -47,42 +79,45 @@ export class NotificationStore implements NotificationStoreInterface {
     }
 
     if (options.read !== undefined) {
-      query = query.where('read', options.read);
+      query = query.where(NOTIFICATION_COLUMNS.READ, options.read);
     }
 
     if (options.createdAfter) {
-      query = query.where('create_at', '>', options.createdAfter);
+      query = query.where(
+        NOTIFICATION_COLUMNS.CREATE_AT,
+        '>',
+        options.createdAfter,
+      );
     }
 
     if (options.origin) {
-      query = query.where('origin', options.origin);
+      query = query.where(NOTIFICATION_COLUMNS.ORIGIN, options.origin);
     }
-    query.orderBy('id', 'desc');
+    query.orderBy(NOTIFICATION_COLUMNS.ID, 'desc');
 
     const notifications = await query;
     return notifications?.map(notification => ({
       ...notification,
-      read: !!notification.read, // Converts 1 to true and 0 to false
+      read: Boolean(notification.read), // Converts 1 to true and 0 to false
     }));
   }
 
-  async insert(notification: Notification): Promise<NotificationId> {
+  async saveNotification(notification: Notification): Promise<NotificationId> {
     const insertedIds = await this.client(NOTIFICATION_TABLE)
       .insert(notification)
-      .returning('id');
-    return insertedIds[0].id;
+      .returning(NOTIFICATION_COLUMNS.ID);
+    return insertedIds?.[0].id;
   }
 
-  async updateStatus(
-    ids: NotificationId[],
-    status: Notification['read'],
-  ): Promise<void> {
+  async updateStatus(updateParams: UpdateStatusParams): Promise<void> {
     await this.client(NOTIFICATION_TABLE)
-      .whereIn('id', ids)
-      .update('read', status);
+      .whereIn(NOTIFICATION_COLUMNS.ID, updateParams.ids)
+      .update(NOTIFICATION_COLUMNS.READ, updateParams.status);
   }
 
-  async deleteAll(ids: NotificationId[]): Promise<void> {
-    await this.client(NOTIFICATION_TABLE).whereIn('id', ids).delete();
+  async deleteNotifications(ids: NotificationId[]): Promise<void> {
+    await this.client(NOTIFICATION_TABLE)
+      .whereIn(NOTIFICATION_COLUMNS.ID, ids)
+      .delete();
   }
 }

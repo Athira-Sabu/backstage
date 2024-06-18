@@ -8,6 +8,7 @@ import express from 'express';
 import { publishSignals } from './SignalsHandler';
 import Ajv from 'ajv';
 import notificationSchema from '../schema/NotificationSchema.json';
+import { UpdateStatusParams } from '@internal/backstage-plugin-notifications-common/';
 
 const validate = new Ajv().compile(notificationSchema);
 
@@ -28,17 +29,20 @@ export const handleGetNotifications = async (
         : undefined,
       origin: req.query.origin ? String(req.query.origin) : undefined,
     };
-    const notifications = await options.notificationsStore.getAll(fetchOptions);
+    const notifications = await options.notificationsStore.getNotifications(
+      fetchOptions,
+    );
     res.send(notifications);
+    return;
   } catch (error) {
     options.logger.error(`Failed to get the notifications: ${error}`);
     res
       .status(500)
       .send({ error: 'An error occurred while fetching notifications.' });
+    return;
   }
 };
-
-export const handlePostNotification = async (
+export const handleCreateNotification = async (
   req: express.Request,
   res: express.Response,
   options: RouterOptions,
@@ -55,16 +59,20 @@ export const handlePostNotification = async (
       return;
     }
     const validNotification = notification as Notification;
-    const id = await options.notificationsStore.insert(validNotification);
+    const id = await options.notificationsStore.saveNotification(
+      validNotification,
+    );
     await publishSignals(
       options.signals,
       { ...validNotification, id },
       options.logger,
     );
     res.status(201).end();
+    return;
   } catch (error) {
     options.logger.error(`Failed to save notification: ${error}`);
     res.status(500).json({ error: 'Failed to save notification' });
+    return;
   }
 };
 
@@ -73,18 +81,21 @@ export const handleUpdateNotificationStatus = async (
   res: express.Response,
   options: RouterOptions,
 ): Promise<void> => {
-  const { ids, status } = req.body;
-  if (!Array.isArray(ids)) {
+  const updateStatusParams = req.body as UpdateStatusParams;
+  if (!Array.isArray(updateStatusParams.ids)) {
     res.status(400).json({ error: 'ids must be an array' });
+    return;
   }
   try {
-    await options.notificationsStore.updateStatus(ids, status);
+    await options.notificationsStore.updateStatus(updateStatusParams);
     res
       .status(200)
       .json({ message: 'Notification status updated successfully' });
+    return;
   } catch (error) {
     options.logger.error(`Failed to update notification status: ${error}`);
     res.status(500).json({ error: 'Failed to update notification status' });
+    return;
   }
 };
 
@@ -99,10 +110,12 @@ export const handleDeleteNotifications = async (
     return;
   }
   try {
-    await options.notificationsStore.deleteAll(ids);
+    await options.notificationsStore.deleteNotifications(ids);
     res.status(200).json({ message: 'Notifications deleted successfully' });
+    return;
   } catch (error) {
     options.logger.error(`Failed to delete notification ${error}`);
     res.status(500).json({ error: 'Failed to delete notification' });
+    return;
   }
 };

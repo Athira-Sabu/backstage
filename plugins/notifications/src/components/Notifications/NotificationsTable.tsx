@@ -6,7 +6,10 @@ import DoneAllIcon from '@mui/icons-material/DoneAll';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
-import { Notification } from '@internal/backstage-plugin-notifications-common/';
+import {
+  Notification,
+  NotificationId,
+} from '@internal/backstage-plugin-notifications-common/';
 
 import { Table, TableColumn, TableFilter } from '@backstage/core-components';
 import React from 'react';
@@ -118,9 +121,9 @@ export const NotificationsTable = ({
   onDelete,
   onUpdateStatus,
 }: NotificationsTableProps) => {
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, setSelected] = useState<NotificationId[]>([]);
 
-  const handleSelect = (id: number) => {
+  const handleSelect = (id: NotificationId) => {
     setSelected(prevSelected =>
       prevSelected.includes(id)
         ? prevSelected.filter(item => item !== id)

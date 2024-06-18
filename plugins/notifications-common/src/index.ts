@@ -28,3 +28,15 @@ export type NotificationFetchOptions = {
   createdAfter?: string;
   origin?: string;
 };
+
+export type UpdateStatusParams = {
+  ids: NotificationId[];
+  status: boolean;
+};
+
+export enum HttpMethod {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+}

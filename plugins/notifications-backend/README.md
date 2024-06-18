@@ -42,6 +42,8 @@ user.
   - read: Filter for the read status of notifications (true or false).
   - createdAfter: Fetch notifications created after this timestamp.
   - origin: The origin/source of the notifications.
+- **Success Response**: `200 OK` with JSON body of notifications.
+- **Error Response**: `500 Internal Server Error` if an error occurs during fetching.
 
 ### Post Notification
 
@@ -62,6 +64,11 @@ Creates a new notification.
 }
 ```
 
+- **Success Response**: 201 Created when the notification is successfully created.
+- **Error Responses**:
+  - 400 Bad Request if the request body fails validation.
+  - 500 Internal Server Error if an error occurs during creation.
+
 ### Update Notification Status
 
 Updates the read status of one or more notifications.
@@ -77,6 +84,11 @@ Updates the read status of one or more notifications.
 }
 ```
 
+- **Success Response**: 200 OK with a message indicating successful update.
+- **Error Responses**:
+  - 400 Bad Request if the request body is incorrect.
+  - 500 Internal Server Error if an error occurs during the update.
+
 ### Delete Notifications
 
 Deletes one or more notifications based on their IDs.
@@ -90,6 +102,11 @@ Deletes one or more notifications based on their IDs.
   "ids": [1, 2, 3]
 }
 ```
+
+- **Success Response**: 200 OK with a message indicating successful deletion.
+- **Error Responses**:
+  - 400 Bad Request if the request body is incorrect.
+  - 500 Internal Server Error if an error occurs during deletion.
 
 ## Getting started
 
