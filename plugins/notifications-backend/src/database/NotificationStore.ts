@@ -12,22 +12,15 @@ import {
 } from '@internal/backstage-plugin-notifications-common';
 import { NotificationStoreInterface } from './NotificationStoreInterface';
 import { PluginDatabaseManager } from '@backstage/backend-common';
+import {
+  NOTIFICATION_COLUMNS,
+  NOTIFICATION_TABLE,
+} from '../../migrations/constants';
 
 const migrationsDir = resolvePackagePath(
   '@internal/backstage-plugin-notifications-backend',
   'migrations',
 );
-const NOTIFICATION_TABLE = 'notification';
-const NOTIFICATION_COLUMNS = {
-  ID: 'id',
-  PRIORITY: 'priority',
-  TITLE: 'title',
-  USER: 'user',
-  MESSAGE: 'message',
-  ORIGIN: 'origin',
-  READ: 'read',
-  CREATED_AT: 'create_at',
-};
 
 export class NotificationStore implements NotificationStoreInterface {
   private static instance: NotificationStore | null = null;
@@ -35,8 +28,8 @@ export class NotificationStore implements NotificationStoreInterface {
   private constructor(private readonly client: Knex) {}
 
   static async getInstance(
-      database: PluginDatabaseManager,
-      logger: LoggerService,
+    database: PluginDatabaseManager,
+    logger: LoggerService,
   ): Promise<NotificationStoreInterface> {
     if (!NotificationStore.instance) {
       try {
@@ -67,7 +60,7 @@ export class NotificationStore implements NotificationStoreInterface {
         NOTIFICATION_COLUMNS.MESSAGE,
         NOTIFICATION_COLUMNS.ORIGIN,
         NOTIFICATION_COLUMNS.READ,
-        NOTIFICATION_COLUMNS.CREATED_AT,
+        NOTIFICATION_COLUMNS.CREATE_AT,
       )
       .where(NOTIFICATION_COLUMNS.USER, options.user);
     if (options.cursor) {
@@ -84,7 +77,7 @@ export class NotificationStore implements NotificationStoreInterface {
 
     if (options.createdAfter) {
       query = query.where(
-        NOTIFICATION_COLUMNS.CREATED_AT,
+        NOTIFICATION_COLUMNS.CREATE_AT,
         '>',
         options.createdAfter,
       );

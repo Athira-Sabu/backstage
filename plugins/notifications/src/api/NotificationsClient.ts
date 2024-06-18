@@ -47,28 +47,25 @@ export class NotificationsClient implements NotificationsApi {
     path: string,
     requestOptions: RequestInit & { params?: Record<string, string> } = {},
   ): Promise<T> {
-      const baseUrl = `${await this.discoveryApi.getBaseUrl('notifications')}`;
-      const url = new URL(path, baseUrl);
+    const baseUrl = `${await this.discoveryApi.getBaseUrl('notifications')}`;
+    const url = new URL(path, baseUrl);
 
-      if (requestOptions.params) {
-        const searchParams = new URLSearchParams(requestOptions.params);
-        url.search = searchParams.toString();
-      }
+    if (requestOptions.params) {
+      const searchParams = new URLSearchParams(requestOptions.params);
+      url.search = searchParams.toString();
+    }
 
-      requestOptions.headers = requestOptions.headers || {
-        'Content-Type': 'application/json',
-      };
-      const response = await this.fetchApi.fetch(
-        url.toString(),
-        requestOptions,
+    requestOptions.headers = requestOptions.headers || {
+      'Content-Type': 'application/json',
+    };
+    const response = await this.fetchApi.fetch(url.toString(), requestOptions);
+
+    if (!response.ok) {
+      throw new Error(
+        `Request failed: ${response.status} ${response.statusText}`,
       );
+    }
 
-      if (!response.ok) {
-        throw new Error(
-          `Request failed: ${response.status} ${response.statusText}`,
-        );
-      }
-
-      return (await response.json()) as Promise<T>;
+    return (await response.json()) as Promise<T>;
   }
 }
