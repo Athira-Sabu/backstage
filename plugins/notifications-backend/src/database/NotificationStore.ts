@@ -34,18 +34,23 @@ export class NotificationStore implements NotificationStoreInterface {
 
   private constructor(private readonly client: Knex) {}
 
-  static async create(
-    database: PluginDatabaseManager,
-    logger: LoggerService,
+  static async getInstance(
+      database: PluginDatabaseManager,
+      logger: LoggerService,
   ): Promise<NotificationStoreInterface> {
     if (!NotificationStore.instance) {
-      const client = await database.getClient();
-      await client.migrate.latest({
-        directory: migrationsDir,
-      });
+      try {
+        const client = await database.getClient();
+        await client.migrate.latest({
+          directory: migrationsDir,
+        });
 
-      logger.info('Migrations successfully ran for notifications plugin');
-      NotificationStore.instance = new NotificationStore(client);
+        logger.info('Migrations successfully ran for notifications plugin');
+        NotificationStore.instance = new NotificationStore(client);
+      } catch (error) {
+        logger.error('Failed to initialize NotificationStore');
+        throw error;
+      }
     }
     return NotificationStore.instance;
   }

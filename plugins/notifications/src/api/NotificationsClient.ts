@@ -47,7 +47,6 @@ export class NotificationsClient implements NotificationsApi {
     path: string,
     requestOptions: RequestInit & { params?: Record<string, string> } = {},
   ): Promise<T> {
-    try {
       const baseUrl = `${await this.discoveryApi.getBaseUrl('notifications')}`;
       const url = new URL(path, baseUrl);
 
@@ -71,8 +70,5 @@ export class NotificationsClient implements NotificationsApi {
       }
 
       return (await response.json()) as Promise<T>;
-    } catch (error) {
-      throw error;
-    }
   }
 }

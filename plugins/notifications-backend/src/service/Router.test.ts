@@ -85,7 +85,7 @@ describe('createRouter', () => {
   beforeAll(async () => {
     const db = createDatabase();
     knex = await db.getClient();
-    notificationsStore = await NotificationStore.create(db, logger);
+    notificationsStore = await NotificationStore.getInstance(db, logger);
     const router = await createRouter({
       notificationsStore,
       logger: logger,
