@@ -12,15 +12,22 @@ import {
 } from '@internal/backstage-plugin-notifications-common';
 import { NotificationStoreInterface } from './NotificationStoreInterface';
 import { PluginDatabaseManager } from '@backstage/backend-common';
-import {
-  NOTIFICATION_COLUMNS,
-  NOTIFICATION_TABLE,
-} from '../../migrations/constants';
 
 const migrationsDir = resolvePackagePath(
   '@internal/backstage-plugin-notifications-backend',
   'migrations',
 );
+const NOTIFICATION_TABLE = 'notification';
+const NOTIFICATION_COLUMNS = {
+  ID: 'id',
+  PRIORITY: 'priority',
+  TITLE: 'title',
+  USER: 'user',
+  MESSAGE: 'message',
+  ORIGIN: 'origin',
+  READ: 'read',
+  CREATE_AT: 'create_at',
+};
 
 export class NotificationStore implements NotificationStoreInterface {
   private static instance: NotificationStore | null = null;
